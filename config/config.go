@@ -15,8 +15,9 @@ var DefaultConfig = Config{
 }
 
 type HostConfig struct {
-	Host string
-	Port string
+	Host string `json:"host"`
+	Port string `json:"port"`
+	Name string `json:"name,omitempty"`
 }
 
 func (h HostConfig) GetMetricsUrl() (url string) {

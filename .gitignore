@@ -1,0 +1,7 @@
+/.idea
+/build
+
+.DS_Store
+/flumebeat
+/flumebeat.test
+*.pyc

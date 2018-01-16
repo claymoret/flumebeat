@@ -1,0 +1,5 @@
+= Flumebeat Docs
+
+Welcome to the Flumebeat documentation.
+
+

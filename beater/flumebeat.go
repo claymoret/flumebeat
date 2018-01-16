@@ -37,7 +37,7 @@ func (bt *Flumebeat) Run(b *beat.Beat) error {
 
 	bt.client = b.Publisher.Connect()
 	ticker := time.NewTicker(bt.config.Period)
-	counter := 1
+
 	for {
 		select {
 		case <-bt.done:
@@ -45,14 +45,27 @@ func (bt *Flumebeat) Run(b *beat.Beat) error {
 		case <-ticker.C:
 		}
 
-		event := common.MapStr{
-			"@timestamp": common.Time(time.Now()),
-			"type":       b.Name,
-			"counter":    counter,
+		for _, host := range bt.config.Hosts {
+			url := host.GetMetricsUrl()
+			logp.Info("Processing: %v", url)
+
+			var mm MetricsMap
+			if err := mm.Fetch(url); err != nil {
+				logp.Err("An error occurred while fetching metrics: %v", err)
+				continue
+			}
+
+			pm := mm.Parse()
+
+			curr := common.Time(time.Now())
+			for _, metric := range pm {
+				metric["@timestamp"] = curr
+				metric["from"] = host
+				bt.client.PublishEvent(common.MapStr(metric))
+			}
+
+			logp.Info("%d Events sent for %v", len(pm), url)
 		}
-		bt.client.PublishEvent(event)
-		logp.Info("Event sent")
-		counter++
 	}
 }
 

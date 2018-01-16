@@ -7,8 +7,19 @@ import "time"
 
 type Config struct {
 	Period time.Duration `config:"period"`
+	Hosts  []HostConfig
 }
 
 var DefaultConfig = Config{
 	Period: 1 * time.Second,
+}
+
+type HostConfig struct {
+	Host string
+	Port string
+}
+
+func (h HostConfig) GetMetricsUrl() (url string) {
+	url = "http://" + h.Host + ":" + h.Port + "/metrics"
+	return
 }

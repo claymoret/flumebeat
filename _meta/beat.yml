@@ -4,4 +4,8 @@
 
 flumebeat:
   # Defines how often an event is sent to the output
-  period: 1s
+  period: 30s
+  hosts:
+    -
+      host: 127.0.0.1
+      port: 8500

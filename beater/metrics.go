@@ -3,7 +3,6 @@ package beater
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
@@ -39,12 +38,8 @@ func (p *MetricsMap) Fetch(url string) error {
 	}
 
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
 
-	dec := json.NewDecoder(strings.NewReader(string(body)))
+	dec := json.NewDecoder(resp.Body)
 	err = dec.Decode(p)
 	if err != nil {
 		return err
